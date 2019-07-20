@@ -7,7 +7,7 @@
             <th v-for="(item,index) in tableTitle"  @click="sortClick(item.isSort,item.key)" :key="index">
               {{item.value}}
               <span v-if="item.isSort" class="warp">
-                <i class="sortCaret down" @click='downClick($event,item.key)'></i><i class="sortCaret up" @click='upClick($event,item.key)'></i>
+                <i class="sortCaret down" @click='handleClick($event,item.key, 1)'></i><i class="sortCaret up" @click='handleClick($event,item.key,2)'></i>
               </span>
             </th>
           </tr>
@@ -82,26 +82,21 @@ export default {
       return array.sort((a, b) => {
         var x = a[key];
         var y = b[key];
+        let small = x < y;
+        let big = x > y;
         if (this.sortOrder == 1) {
-          return x < y ? -1 : x > y ? 1 : 0;
-        } else {
-          return x > y ? -1 : x < y ? 1 : 0;
+          return small ? -1 : big ? 1 : 0;
         }
+        return big ? -1 : small ? 1 : 0;
       });
     },
-    downClick(event, key) {
+    // 公用函数
+    handleClick(event, key, desc) {
+      // desc: 1 升序 2 降序
       // 阻止冒泡
       event.stopPropagation();
       this.sortKey = key;
-      // 升序排序
-      this.sortOrder = 1;
-      this.sortByKey(this.tableDataList, key);
-    },
-    upClick(event, key) {
-      // 阻止冒泡
-      event.stopPropagation();
-      this.sortKey = key;
-      this.sortOrder = 2;
+      this.sortOrder = desc;
       this.sortByKey(this.tableDataList, key);
     }
   }
