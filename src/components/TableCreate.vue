@@ -30,143 +30,158 @@
 </template>
 <script>
 export default {
-    name:'TableCreate',
-    props:['tableTitle','currentPage','cloneTableDataList','tableDataList','totalCount'],
-    data(){
-        return{
-            sortOrder:0,//0 默认排序 1 升序排序 2 降序排序
-            sortKey:''
-        }
+  name: "TableCreate",
+  props: [
+    "tableTitle",
+    "currentPage",
+    "cloneTableDataList",
+    "tableDataList",
+    "totalCount"
+  ],
+  data() {
+    return {
+      sortOrder: 0, //0 默认排序 1 升序排序 2 降序排序
+      sortKey: ""
+    };
+  },
+  created() {},
+  methods: {
+    pageClick(val) {
+      //更改每页的数据
+      this.$emit("changePage", val);
     },
-    created(){
-    },
-    methods:{
-        pageClick(val){
-            //更改每页的数据
-            this.$emit('changePage',val)
-        },
-        sortClick(val,key){
-            if(val){
-                // 保存key
-                console.log('key',key);
-                
-                if(typeof this.sortKey == 'undefind'){
-                     this.sortKey = key
-                     this.sortOrder = 0
-                }else if(this.sortKey != key){
-                    this.sortKey = key
-                    this.sortOrder = 0
-                }
-                //与之前的key进行对比
-                if(this.sortKey == key){
-                    this.sortOrder ++;
-                    if(this.sortOrder > 2){
-                        this.sortOrder = 0
-                    }
-                }
-                // 升序还是降序还是保留之前默认的数据
-                if(this.sortOrder == 0){
-                    this.$emit('defaultValue')
-                }else{
-                    this.sortByKey(this.tableDataList,key)
-                }
-                //当前下面的颜色改变
+    sortClick(val, key) {
+      if (val) {
+        // 保存key
 
-            }
-        },
-        // 排序
-        sortByKey(array,key){
-            return array.sort((a,b)=>{
-                var x=a[key];
-                var y=b[key];
-                if(this.sortOrder == 1){
-                    return ((x<y)?-1:((x>y)?1:0));
-                }else{
-                    return ((x>y)?-1:((x<y)?1:0));
-                }
-            });
-        },
-        downClick(event,key){
-            // 阻止冒泡
-            event.stopPropagation()
-            this.sortKey = key
-            // 升序排序
-            this.sortOrder = 1
-            this.sortByKey(this.tableDataList,key)
-            
-        },
-        upClick(event,key){
-            // 阻止冒泡
-            event.stopPropagation()
-            this.sortKey = key
-            this.sortOrder = 2
-            this.sortByKey(this.tableDataList,key)
-        },
+        if (typeof this.sortKey == "undefind") {
+          this.sortKey = key;
+          this.sortOrder = 0;
+        } else if (this.sortKey != key) {
+          this.sortKey = key;
+          this.sortOrder = 0;
+        }
+        //与之前的key进行对比
+        if (this.sortKey == key) {
+          this.sortOrder++;
+          if (this.sortOrder > 2) {
+            this.sortOrder = 0;
+          }
+        }
+        // 升序还是降序还是保留之前默认的数据
+        if (this.sortOrder == 0) {
+          this.$emit("defaultValue");
+        } else {
+          this.sortByKey(this.tableDataList, key);
+        }
+        //当前下面的颜色改变
+      }
+    },
+    // 排序
+    sortByKey(array, key) {
+      return array.sort((a, b) => {
+        var x = a[key];
+        var y = b[key];
+        if (this.sortOrder == 1) {
+          return x < y ? -1 : x > y ? 1 : 0;
+        } else {
+          return x > y ? -1 : x < y ? 1 : 0;
+        }
+      });
+    },
+    downClick(event, key) {
+      // 阻止冒泡
+      event.stopPropagation();
+      this.sortKey = key;
+      // 升序排序
+      this.sortOrder = 1;
+      this.sortByKey(this.tableDataList, key);
+    },
+    upClick(event, key) {
+      // 阻止冒泡
+      event.stopPropagation();
+      this.sortKey = key;
+      this.sortOrder = 2;
+      this.sortByKey(this.tableDataList, key);
     }
-}
+  }
+};
 </script>
 <style lang="scss">
-    .tableCreate{
-        .warp{
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            height: 24px;
-            width: 24px;
-            vertical-align: middle;
-            cursor: pointer;
-            overflow: initial;
-            position: relative;
+.tableCreate {
+  .warp {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    height: 24px;
+    width: 24px;
+    vertical-align: middle;
+    cursor: pointer;
+    overflow: initial;
+    position: relative;
+  }
+  .sortCaret {
+    width: 0;
+    height: 0;
+    border: 5px solid transparent;
+    position: absolute;
+    left: 7px;
+  }
+  .down {
+    border-bottom-color: #c0c4cc;
+    top: 0px;
+  }
+  .up {
+    border-top-color: #c0c4cc;
+    bottom: 2px;
+  }
+  .activeIndex {
+    background: #607d8b;
+    color: #fff;
+  }
+  table {
+    border-collapse: collapse;
+    tbody {
+      tr {
+        &:hover {
+          cursor: pointer;
+          background: #f3f8fb;
+          color: #409eff;
         }
-        .sortCaret{
-            width: 0;
-            height: 0;
-            border: 5px solid transparent;
-            position: absolute;
-            left: 7px;
-            
-        }
-        .down{
-            border-bottom-color: #c0c4cc;
-           top: 0px;
-        }
-        .up{
-            border-top-color:#c0c4cc;
-            bottom: 2px;
-        }
-        .activeIndex{
-            background: #333;
-            color: #fff;
-        }
-        table{
-            border-collapse:collapse;
-            tr{
-                th{
-                    border: 1px solid #ccc;
-                    text-align: center;
-                    padding: 6px 10px;
-                    min-width: 100px
-                }
-                td{
-                border: 1px solid #ccc; 
-                text-align: center; 
-                }
-            }
-        }
-        .page{
-            li{
-                display: inline-block;
-                border: 1px solid #ccc;
-                padding: 4px 6px;
-                list-style-type:none;
-                margin-right: 4px;
-                cursor: pointer;
-            }
-            li:hover{
-                color: #409eff;
-            }
-        }
+      }
     }
+    tr {
+      th,
+      td {
+        border: 1px solid #ccc;
+        text-align: center;
+        &:hover {
+          cursor: pointer;
+          background: #f3f8fb;
+          color: #409eff;
+        }
+      }
+
+      th {
+        padding: 6px 10px;
+        min-width: 100px;
+      }
+    }
+  }
+  .page {
+    li {
+      display: inline-block;
+      border: 1px solid #ccc;
+      padding: 4px 6px;
+      list-style-type: none;
+      margin-right: 4px;
+      cursor: pointer;
+    }
+    li:hover {
+      color: #409eff;
+    }
+  }
+}
 </style>
 
 
